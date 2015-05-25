@@ -2678,22 +2678,8 @@ static unsigned hub_is_wusb(struct usb_hub *hub)
 #define HUB_LONG_RESET_TIME	200
 #define HUB_RESET_TIMEOUT	800
 
-/*
- * "New scheme" enumeration causes an extra state transition to be
- * exposed to an xhci host and causes USB3 devices to receive control
- * commands in the default state.  This has been seen to cause
- * enumeration failures, so disable this enumeration scheme for USB3
- * devices.
- */
-static bool use_new_scheme(struct usb_device *udev, int retry)
-{
-	if (udev->speed >= USB_SPEED_SUPER)
-		return false;
 
-	return USE_NEW_SCHEME(retry);
-}
-
-/* Is a USB 3.0 port in the Inactive or Compliance Mode state?
+/* Is a USB 3.0 port in the Inactive or Complinance Mode state?
  * Port worm reset is required to recover
  */
 static bool hub_port_warm_reset_required(struct usb_hub *hub, int port1,
@@ -2761,47 +2747,6 @@ static int hub_port_wait_reset(struct usb_hub *hub, int port1,
 	if ((portstatus & USB_PORT_STAT_RESET))
 		return -EBUSY;
 
-	if (hub_port_warm_reset_required(hub, port1, portstatus))
-		return -ENOTCONN;
-
-	/* Device went away? */
-	if (!(portstatus & USB_PORT_STAT_CONNECTION))
-		return -ENOTCONN;
-
-	/* Retry if connect change is set but status is still connected.
-	 * A USB 3.0 connection may bounce if multiple warm resets were issued,
-	 * but the device may have successfully re-connected. Ignore it.
-	 */
-	if (!hub_is_superspeed(hub->hdev) &&
-	    (portchange & USB_PORT_STAT_C_CONNECTION)) {
-		usb_clear_port_feature(hub->hdev, port1,
-				       USB_PORT_FEAT_C_CONNECTION);
-		return -EAGAIN;
-	}
-
-	if (!(portstatus & USB_PORT_STAT_ENABLE))
-		return -EBUSY;
-
-	if (!udev)
-		return 0;
-
-	if (hub_is_wusb(hub))
-		udev->speed = USB_SPEED_WIRELESS;
-	else if (hub_is_superspeedplus(hub->hdev) &&
-		 port_speed_is_ssp(hub->hdev, ext_portstatus &
-				   USB_EXT_PORT_STAT_RX_SPEED_ID))
-		udev->speed = USB_SPEED_SUPER_PLUS;
-	else if (hub_is_superspeed(hub->hdev))
-		udev->speed = USB_SPEED_SUPER;
-	else if (portstatus & USB_PORT_STAT_HIGH_SPEED)
-		udev->speed = USB_SPEED_HIGH;
-	else if (portstatus & USB_PORT_STAT_LOW_SPEED)
-		udev->speed = USB_SPEED_LOW;
-	else
-		udev->speed = USB_SPEED_FULL;
-	return 0;
-}
-
 /* Handle port reset and port warm(BH) reset (for USB3 protocol ports) */
 static int hub_port_reset(struct usb_hub *hub, int port1,
 			struct usb_device *udev, unsigned int delay, bool warm)
@@ -2826,8 +2771,7 @@ static int hub_port_reset(struct usb_hub *hub, int port1,
 		 * double check and see if one is needed.
 		 */
 		if (hub_port_status(hub, port1, &portstatus, &portchange) == 0)
-			if (hub_port_warm_reset_required(hub, port1,
-							portstatus))
+			if (hub_port_warm_reset_required(hub, portstatus))
 				warm = true;
 	}
 	clear_bit(port1, hub->warm_reset_bits);
@@ -2854,19 +2798,17 @@ static int hub_port_reset(struct usb_hub *hub, int port1,
 
 		/* Check for disconnect or reset */
 		if (status == 0 || status == -ENOTCONN || status == -ENODEV) {
-			usb_clear_port_feature(hub->hdev, port1,
+			clear_port_feature(hub->hdev, port1,
 					USB_PORT_FEAT_C_RESET);
 
 			if (!hub_is_superspeed(hub->hdev))
 				goto done;
 
-			usb_clear_port_feature(hub->hdev, port1,
+			clear_port_feature(hub->hdev, port1,
 					USB_PORT_FEAT_C_BH_PORT_RESET);
-			usb_clear_port_feature(hub->hdev, port1,
+			clear_port_feature(hub->hdev, port1,
 					USB_PORT_FEAT_C_PORT_LINK_STATE);
-
-			if (udev)
-				usb_clear_port_feature(hub->hdev, port1,
+			clear_port_feature(hub->hdev, port1,
 					USB_PORT_FEAT_C_CONNECTION);
 
 			/*
