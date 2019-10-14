@@ -67,6 +67,20 @@ obj-$(CONFIG_TUSB1064_XR_MISC) += tusb1064.o
 obj-$(CONFIG_VXR200_XR_MISC) += vxr7200.o
 
 
+
+#ifdef VENDOR_EDIT
+#Fei.Mo@BSP.Kernel.Debug, 2018/10/23, Add for motor
+obj-y				+= motor.o
+obj-y				+= oppo_motor/
+
+
+
+#ifdef VENDOR_EDIT
+#Fei.Mo@BSP.Kernel.Debug, 2018/10/23, Add for motor
+obj-y				+= motor.o
+obj-y				+= oppo_motor/
+
+
 lkdtm-$(CONFIG_LKDTM)		+= lkdtm_core.o
 lkdtm-$(CONFIG_LKDTM)		+= lkdtm_bugs.o
 lkdtm-$(CONFIG_LKDTM)		+= lkdtm_heap.o
