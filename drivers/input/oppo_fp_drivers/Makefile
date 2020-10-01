@@ -6,17 +6,5 @@ obj-y        += goodix_optical_fp/
 obj-y        += silead/
 obj-y        += egis/
 endif
-endif
-ifneq ($(filter MSM_17011 MSM_17015 MSM_17081 MSM_17085, $(OPPO_TARGET_DEVICE)),)
-obj-y        += goodix_fp/
-endif
-ifneq ($(filter full_oppo6763 full_oppo6771, $(shell echo $(TARGET_PRODUCT) | sed -e 's/_1.*//g')),)
-obj-y        += goodix_fp/
-endif
-ifneq ($(filter full_oppo6779, $(shell echo $(TARGET_PRODUCT) | sed -e 's/_1.*//g')),)
-obj-y        += silead_optical_fp/
-obj-y        += goodix_optical_fp/
-endif
-endif
 
 subdir-ccflags-y += -DCONFIG_OPPO_FINGERPRINT_PROJCT=18041
