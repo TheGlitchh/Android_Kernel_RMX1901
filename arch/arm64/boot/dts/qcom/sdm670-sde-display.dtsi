@@ -727,7 +727,7 @@
 		lab-supply = <&lcdb_ldo_vreg>;
 		ibb-supply = <&lcdb_ncp_vreg>;
 	};
-
+	/*
 	dsi_dual_xrsmrtvwr_jdi_video_display: qcom,dsi-display@21 {
 		compatible = "qcom,dsi-display";
 		label = "dsi_dual_xrsmrtvwr_jdi_video_display";
@@ -749,7 +749,7 @@
 		vddio-supply = <&pm660_l11>;
 		eab-supply = <&lcdb_ldo_vreg>;
 		ibb-supply = <&lcdb_ncp_vreg>;
-	};
+	}; #TODO duplicate node name */
 
 	sde_wb: qcom,wb-display@0 {
 		compatible = "qcom,wb-display";
