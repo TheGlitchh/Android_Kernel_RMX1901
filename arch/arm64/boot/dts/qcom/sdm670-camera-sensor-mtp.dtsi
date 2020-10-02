@@ -411,4 +411,4 @@
 	};
 };
 
-#include "RMX1901/sdm670-camera-sensor-mtp-overlay.dtsi"
+#include "/media/theglitchh/sourav/kernel/lineage/arch/arm64/boot/dts/qcom/RMX1901/sdm670-camera-sensor-mtp-overlay.dtsi"

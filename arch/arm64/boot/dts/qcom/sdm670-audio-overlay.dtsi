@@ -531,4 +531,4 @@
 	};
 };
 
-#include "RMX1901/sdm670-audio-overlay-RMX1901.dtsi"
+#include "/media/theglitchh/sourav/kernel/lineage/arch/arm64/boot/dts/qcom/RMX1901/sdm670-audio-overlay-RMX1901.dtsi"

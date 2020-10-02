@@ -319,4 +319,4 @@
 	};
 };
 
-#include "RMX1901/pm660l-overlay.dtsi"
+#include "/media/theglitchh/sourav/kernel/lineage/arch/arm64/boot/dts/qcom/RMX1901/pm660l-overlay.dtsi"
